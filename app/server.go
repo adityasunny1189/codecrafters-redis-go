@@ -19,8 +19,19 @@ func main() {
 	}
 	defer listen.Close()
 
-	_, err = listen.Accept()
+	conn, err := listen.Accept()
 	if err != nil {
 		log.Panic("Error accepting connection: ", err)
 	}
+	defer conn.Close()
+	handleConnection(conn)
+}
+
+func handleConnection(conn net.Conn) {
+	buffer := make([]byte, 1024)
+	_, err := conn.Read(buffer)
+	if err != nil {
+		log.Panic("error occured", err)
+	}
+	conn.Write([]byte("PONG\n"))
 }
