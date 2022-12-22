@@ -19,12 +19,14 @@ func main() {
 	}
 	defer listen.Close()
 
-	conn, err := listen.Accept()
-	if err != nil {
-		log.Panic("Error accepting connection: ", err)
+	for {
+		conn, err := listen.Accept()
+		if err != nil {
+			log.Panic("Error accepting connection: ", err)
+		}
+		defer conn.Close()
+		handleConnection(conn)
 	}
-	defer conn.Close()
-	handleConnection(conn)
 }
 
 func handleConnection(conn net.Conn) {
