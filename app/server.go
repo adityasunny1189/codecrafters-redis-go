@@ -33,5 +33,5 @@ func handleConnection(conn net.Conn) {
 	if err != nil {
 		log.Panic("error occured", err)
 	}
-	conn.Write([]byte("PONG\n"))
+	conn.Write([]byte("PONG\r\n"))
 }
