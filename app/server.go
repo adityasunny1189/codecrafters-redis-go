@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"log"
 	"net"
 )
@@ -24,18 +25,21 @@ func main() {
 		if err != nil {
 			log.Panic("Error accepting connection: ", err)
 		}
-		for {
-			handleConnection(conn)
-			defer conn.Close()
-		}
+		go handleConnection(conn)
+		defer conn.Close()
 	}
 }
 
 func handleConnection(conn net.Conn) {
-	buffer := make([]byte, 1024)
-	_, err := conn.Read(buffer)
-	if err != nil {
-		log.Panic("error occured", err)
+	for {
+		buffer := make([]byte, 1024)
+		if _, err := conn.Read(buffer); err != nil {
+			if err == io.EOF {
+				log.Println("terminating")
+				break
+			}
+			log.Panic("error occured", err)
+		}
+		conn.Write([]byte("+PONG\r\n"))
 	}
-	conn.Write([]byte("+PONG\r\n"))
 }
