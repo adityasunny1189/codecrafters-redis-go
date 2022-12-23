@@ -33,7 +33,7 @@ func handleConnection(conn net.Conn) {
 	buffer := make([]byte, 1024)
 	_, err := conn.Read(buffer)
 	if err != nil {
-		log.Panic("error occured", err)
+		log.Panic("error occured: ", err)
 	}
 	conn.Write([]byte("+PONG\r\n"))
 }
