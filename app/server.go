@@ -15,16 +15,12 @@ const (
 func main() {
 	log.Println("Logs from your program will appear here!")
 	listen, err := net.Listen(TYPE, HOST+":"+PORT)
-	if err != nil {
-		log.Panic("Failed to bind to port 6379 ", err)
-	}
+	checkErr(err, "Failed to bind to port 6379 ")
 	defer listen.Close()
 
 	for {
 		conn, err := listen.Accept()
-		if err != nil {
-			log.Panic("Error accepting connection: ", err)
-		}
+		checkErr(err, "Error accepting connection: ")
 		go handleConnection(conn)
 		defer conn.Close()
 	}
@@ -41,5 +37,11 @@ func handleConnection(conn net.Conn) {
 			log.Panic("error occured", err)
 		}
 		conn.Write([]byte("+PONG\r\n"))
+	}
+}
+
+func checkErr(err error, msg string) {
+	if err != nil {
+		log.Panic(msg, err)
 	}
 }
